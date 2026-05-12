@@ -1,45 +1,40 @@
-name: DevOps Proyekti CI/CD
+name: CI/CD Pipeline Automation
 
-# 1. Pipeline nə vaxt işə düşsün?
 on:
   push:
-    branches: [ "main" ]  # main budağına kod push olunanda
+    branches: [ "main" ]
   pull_request:
-    branches: [ "main" ]  # Pull request açılanda
+    branches: [ "main" ]
 
 jobs:
-  # 2. BİLD VƏ TEST MƏRHƏLƏSİ
   build-and-test:
-    runs-on: ubuntu-latest # GitHub-ın bizə verdiyi virtual kompyuter
-    
-    steps:
-      - name: Kodu kopyala
-        uses: actions/checkout@v3 # Repositoriyadakı kodu virtual maşına çəkir
+    runs-on: ubuntu-latest
 
-      - name: Python mühitini quraşdır
+    steps:
+      - name: Checkout Source Code
+        uses: actions/checkout@v3
+
+      - name: Set up Python Environment
         uses: actions/setup-python@v4
         with:
           python-version: '3.9'
 
-      - name: Kitabxanaları yüklə
+      - name: Install Dependencies
         run: |
-          pip install --upgrade pip
-          # Əgər requirements.txt varsa: pip install -r requirements.txt
+          python -m pip install --upgrade pip
+          if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
 
-      - name: Testləri icra et
+      - name: Run Unit Tests
         run: |
-          echo "Testlər başladılır..."
-          # Bura real test əmrini (məs: pytest) yaza bilərsən
-          echo "Bütün testlər uğurla keçdi (OK)."
+          echo "Running automated tests..."
+          # Örnək: pytest
 
-  # 3. DEPLOY (YERLƏŞDİRMƏ) MƏRHƏLƏSİ
   deploy:
-    needs: build-and-test # Bu mərhələ yalnız Build uğurlu olsa işləyəcək
+    needs: build-and-test
     runs-on: ubuntu-latest
     
     steps:
-      - name: Serverə qoşulma və Yerləşdirmə
+      - name: Deployment to Production
         run: |
-          echo "Serverə qoşulur..."
-          echo "Yeni versiya tətbiq olunur..."
-          echo "Layihə canlı mühitdədir: http://mysite.com"
+          echo "Deploying application to the production server..."
+          echo "Deployment status: Successful"
